@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	h1 Quest
+	p #{question}
+	p
+		form(method='POST' action='/')
+			input(type='text' name='answer' autocomplete='off' autofocus)
+			br
+			input(type='submit' value='Ответить')
+	if error
+		p Wrong answer =(
+	p
+		a(href='/new') Начать заново
