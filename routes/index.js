@@ -3,11 +3,7 @@ var router = express.Router();
 var levels = require('../levels');
 
 function getLevel(req) {
-	var level = 0;
-	if (req.signedCookies.level) {
-		level = req.signedCookies.level;
-	}
-	return level;
+	return parseInt(req.signedCookies.level) || 0;
 }
 
 function renderLevel(res, level, error) {
@@ -25,17 +21,9 @@ router.get('/', function(req, res) {
 
 router.post('/', function(req, res) {
   var level = getLevel(req);
-
-  if (level >= levels.length) {
-  	res.render('finish');
-  } else {
-  	if (req.body.answer == levels[level].answer) {
-  		++level;
-  		renderLevel(res, level, false);
-  	} else {
-  		renderLevel(res, level, true);
-  	}
-  }
+  var error = level < levels.length && req.body.answer != levels[level].answer;
+  level += error ? 0 : 1;
+  renderLevel(res, level, error);
 });
 
 router.get('/new', function(req, res) {
